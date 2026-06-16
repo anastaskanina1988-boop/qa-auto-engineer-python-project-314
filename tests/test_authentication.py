@@ -12,6 +12,7 @@ def test_successful_login(driver, app_base_url):
     dashboard = DashboardPage(driver)
 
     assert dashboard.is_loaded()
+    assert driver.current_url != app_base_url
     assert dashboard.visible(DashboardPage.PROFILE).is_displayed()
 
 
