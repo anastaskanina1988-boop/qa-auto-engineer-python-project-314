@@ -14,8 +14,11 @@ except ImportError:
 
 @pytest.fixture(scope="session")
 def app_base_url():
-    """Get the application base URL from environment variable."""
-    return os.environ.get("APP_BASE_URL", "http://localhost:5173")
+    """Get the application base URL for local and Hexlet CI runs."""
+    base_url = os.environ.get("APP_BASE_URL", "http://localhost:5173")
+    if os.environ.get("IMPLEMENTATION") and base_url == "http://localhost:5173":
+        return "http://server"
+    return base_url
 
 
 def pytest_configure(config):
