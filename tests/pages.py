@@ -1,4 +1,4 @@
-"""Page Object классы."""
+"""Page Object."""
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -11,16 +11,13 @@ class LoginPage:
         self.wait = WebDriverWait(driver, 10)
     
     def enter_username(self, username):
-        field = self.driver.find_element(By.NAME, "username")
-        field.send_keys(username)
+        self.driver.find_element(By.NAME, "username").send_keys(username)
     
     def enter_password(self, password):
-        field = self.driver.find_element(By.NAME, "password")
-        field.send_keys(password)
+        self.driver.find_element(By.NAME, "password").send_keys(password)
     
     def click_login(self):
-        btn = self.driver.find_element(By.TAG_NAME, "button")
-        btn.click()
+        self.driver.find_element(By.TAG_NAME, "button").click()
     
     def login(self, username, password):
         self.enter_username(username)
@@ -38,19 +35,15 @@ class DashboardPage:
         return True
     
     def open_profile(self):
-        profile_btn = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Jane')]")
-        profile_btn.click()
+        self.driver.find_element(By.XPATH, "//button[contains(text(), 'Jane')]").click()
     
     def logout(self):
-        logout_item = self.driver.find_element(By.CSS_SELECTOR, "li.logout")
-        logout_item.click()
+        self.driver.find_element(By.CSS_SELECTOR, "li.logout").click()
 
 
 class PasswordDialog:
     def __init__(self, driver):
         self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
     
     def click_ok(self):
-        ok_btn = self.driver.find_element(By.XPATH, "//button[contains(text(), 'OK')]")
-        ok_btn.click()
+        self.driver.find_element(By.XPATH, "//button[contains(text(), 'OK')]").click()

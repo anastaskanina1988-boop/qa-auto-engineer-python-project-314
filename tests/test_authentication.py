@@ -6,7 +6,11 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from .pages import LoginPage, DashboardPage, PasswordDialog
+
+try:
+    from pages import LoginPage, DashboardPage, PasswordDialog
+except ImportError:
+    from .pages import LoginPage, DashboardPage, PasswordDialog
 
 
 @pytest.fixture
@@ -23,7 +27,7 @@ def app_base_url():
 
 
 def test_successful_login(driver, app_base_url):
-    """Проверяем, что можно войти в приложение."""
+    """Проверяем вход."""
     driver.get(app_base_url)
     
     login_page = LoginPage(driver)
@@ -45,17 +49,14 @@ def test_login_and_logout(driver, app_base_url):
     dashboard = DashboardPage(driver)
     assert dashboard.is_loaded()
     
-    # Закрытие диалога
     try:
         dialog = PasswordDialog(driver)
         dialog.click_ok()
     except:
         pass
     
-    # Выход
     dashboard.open_profile()
     dashboard.logout()
     
-    # Проверяем, что на странице входа
     wait.until(EC.presence_of_element_located((By.NAME, "username")))
     assert driver.find_element(By.NAME, "username").is_displayed()
