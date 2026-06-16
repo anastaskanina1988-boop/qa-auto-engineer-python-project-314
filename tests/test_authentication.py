@@ -13,19 +13,6 @@ except ImportError:
     from .pages import LoginPage, DashboardPage, PasswordDialog
 
 
-@pytest.fixture
-def driver():
-    driver = webdriver.Chrome()
-    driver.implicitly_wait(10)
-    yield driver
-    driver.quit()
-
-
-@pytest.fixture
-def app_base_url():
-    return os.environ.get("APP_BASE_URL", "http://localhost:5173")
-
-
 def test_successful_login(driver, app_base_url):
     """Проверяем вход."""
     driver.get(app_base_url)

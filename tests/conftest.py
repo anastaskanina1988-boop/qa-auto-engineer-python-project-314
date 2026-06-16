@@ -14,3 +14,12 @@ def pytest_configure(config):
     """Configure pytest with custom markers."""
     config.addinivalue_line("markers", "login: marks tests as login tests")
     config.addinivalue_line("markers", "logout: marks tests as logout tests")
+from selenium import webdriver
+
+
+@pytest.fixture
+def driver():
+    driver = webdriver.Chrome()
+    driver.implicitly_wait(10)
+    yield driver
+    driver.quit()
