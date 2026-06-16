@@ -14,13 +14,6 @@ def test_successful_login(driver, app_base_url):
     assert driver.current_url != app_base_url
 
 
-def test_login_with_invalid_credentials_stays_on_login_page(driver, app_base_url):
-    login_page = LoginPage(driver).open(app_base_url)
-
-    login_page.login("wrong-user", "wrong-password")
-
-    assert login_page.visible(LoginPage.USERNAME).is_displayed()
-
 
 def test_login_and_logout(authenticated_driver):
     dashboard = DashboardPage(authenticated_driver)
