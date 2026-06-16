@@ -1,200 +1,46 @@
 import uuid
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
 try:
-    from pages import LoginPage
+    from pages import LabelsPage
 except ImportError:
-    from .pages import LoginPage
+    from .pages import LabelsPage
 
 
-def test_labels_table_loaded(driver, app_base_url):
-    driver.get(app_base_url)
-
-    login_page = LoginPage(driver)
-    login_page.login("test", "test")
-
-    driver.find_element(
-        By.LINK_TEXT,
-        "Labels"
-    ).click()
-
-    assert driver.find_element(
-        By.XPATH,
-        "//th[contains(., 'Name')]"
-    )
+def unique_label_name(prefix="Label"):
+    return f"{prefix} {uuid.uuid4().hex[:6]}"
 
 
-def test_create_label(driver, app_base_url):
-    driver.get(app_base_url)
+def test_labels_table_loaded(authenticated_driver):
+    labels = LabelsPage(authenticated_driver).open()
 
-    login_page = LoginPage(driver)
-    login_page.login("test", "test")
-
-    driver.find_element(
-        By.LINK_TEXT,
-        "Labels"
-    ).click()
-
-    driver.find_element(
-        By.XPATH,
-        '//*[@id="main-content"]/div/div/div[1]/div/a'
-    ).click()
-
-    name = f"Label {uuid.uuid4().hex[:6]}"
-
-    driver.find_element(
-        By.TAG_NAME,
-        "input"
-    ).send_keys(name)
-
-    driver.find_element(
-        By.CSS_SELECTOR,
-        'button[aria-label="Save"]'
-    ).click()
-
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                f"//span[contains(text(), '{name}')]"
-            )
-        )
-    )
-
-    assert name in driver.page_source
+    labels.assert_headers("Name")
 
 
-def test_edit_label(driver, app_base_url):
-    driver.get(app_base_url)
+def test_create_label(authenticated_driver):
+    labels = LabelsPage(authenticated_driver).open()
+    name = unique_label_name()
 
-    login_page = LoginPage(driver)
-    login_page.login("test", "test")
+    labels.create_label(name)
 
-    driver.find_element(
-        By.LINK_TEXT,
-        "Labels"
-    ).click()
-
-    driver.find_element(
-        By.XPATH,
-        '//*[@id="main-content"]/div/div/div[1]/div/a'
-    ).click()
-
-    name = f"Label {uuid.uuid4().hex[:6]}"
-
-    driver.find_element(
-        By.TAG_NAME,
-        "input"
-    ).send_keys(name)
-
-    driver.find_element(
-        By.CSS_SELECTOR,
-        'button[aria-label="Save"]'
-    ).click()
-
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                f"//span[contains(text(), '{name}')]"
-            )
-        )
-    )
-
-    driver.find_element(
-        By.XPATH,
-        f"//span[contains(text(), '{name}')]"
-    ).click()
-
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located(
-            (By.CSS_SELECTOR, 'button[aria-label="Save"]')
-        )
-    )
-
-    input_field = driver.find_element(
-        By.TAG_NAME,
-        "input"
-    )
-
-    input_field.send_keys(Keys.COMMAND, "a")
-    input_field.send_keys(Keys.BACKSPACE)
-    input_field.send_keys("Updated Label")
-
-    driver.find_element(
-        By.CSS_SELECTOR,
-        'button[aria-label="Save"]'
-    ).click()
-
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//span[contains(text(), 'Updated Label')]"
-            )
-        )
-    )
-
-    assert driver.find_element(
-        By.XPATH,
-        "//span[contains(text(), 'Updated Label')]"
-    )
+    assert labels.has_text(name)
 
 
-def test_delete_label(driver, app_base_url):
-    driver.get(app_base_url)
+def test_edit_label(authenticated_driver):
+    labels = LabelsPage(authenticated_driver).open()
+    name = unique_label_name()
+    updated_name = unique_label_name("Updated Label")
 
-    login_page = LoginPage(driver)
-    login_page.login("test", "test")
+    labels.create_label(name)
+    labels.rename_label(name, updated_name)
 
-    driver.find_element(
-        By.LINK_TEXT,
-        "Labels"
-    ).click()
+    assert labels.has_text(updated_name)
 
-    driver.find_element(
-        By.XPATH,
-        '//*[@id="main-content"]/div/div/div[1]/div/a'
-    ).click()
 
-    name = f"Label {uuid.uuid4().hex[:6]}"
+def test_delete_label(authenticated_driver):
+    labels = LabelsPage(authenticated_driver).open()
+    name = unique_label_name()
 
-    driver.find_element(
-        By.TAG_NAME,
-        "input"
-    ).send_keys(name)
+    labels.create_label(name)
+    labels.delete_label(name)
 
-    driver.find_element(
-        By.CSS_SELECTOR,
-        'button[aria-label="Save"]'
-    ).click()
-
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                f"//span[contains(text(), '{name}')]"
-            )
-        )
-    )
-
-    driver.find_element(
-        By.XPATH,
-        f"//span[contains(text(), '{name}')]"
-    ).click()
-
-    driver.find_element(
-        By.CSS_SELECTOR,
-        'button[aria-label="Delete"]'
-    ).click()
-
-    driver.find_element(
-        By.LINK_TEXT,
-        "Labels"
-    ).click()
-
-    assert name not in driver.page_source
+    assert not labels.has_text(name)

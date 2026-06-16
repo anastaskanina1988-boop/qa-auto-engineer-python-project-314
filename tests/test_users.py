@@ -1,180 +1,55 @@
-
 import uuid
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
+
 try:
-    from pages import LoginPage
+    from pages import UsersPage
 except ImportError:
-    from .pages import LoginPage
-
-def test_users_table_loaded(driver, app_base_url):
-    driver.get(app_base_url)
-
-    login_page = LoginPage(driver)
-    login_page.login("test", "test")
-
-    driver.find_element(By.LINK_TEXT, "Users").click()
-
-    assert driver.find_element(By.XPATH, "//th[contains(., 'Email')]")
-    assert driver.find_element(By.XPATH, "//th[contains(., 'First name')]")
-    assert driver.find_element(By.XPATH, "//th[contains(., 'Last name')]")
-
-def test_create_user(driver, app_base_url):
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-
-    driver.get(app_base_url)
-
-    login_page = LoginPage(driver)
-    login_page.login("test", "test")
-
-    driver.find_element(By.LINK_TEXT, "Users").click()
-
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//th[contains(., 'Email')]")
-        )
-    )
-
-    driver.find_element(
-        By.XPATH,
-        '//*[@id="main-content"]/div/div/div[1]/div/a'
-    ).click()
-
-    email = f"{uuid.uuid4().hex[:8]}@example.com"
-
-    inputs = driver.find_elements(By.TAG_NAME, "input")
-
-    inputs[0].send_keys(email)
-    inputs[1].send_keys("Test")
-    inputs[2].send_keys("User")
-
-    driver.find_element(
-        By.CSS_SELECTOR,
-        'button[aria-label="Save"]'
-    ).click()
-
-    assert email in driver.page_source
+    from .pages import UsersPage
 
 
-def test_edit_user(driver, app_base_url):
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
+def unique_email():
+    return f"{uuid.uuid4().hex[:8]}@example.com"
 
-    driver.get(app_base_url)
 
-    login_page = LoginPage(driver)
-    login_page.login("test", "test")
+def test_users_table_loaded(authenticated_driver):
+    users = UsersPage(authenticated_driver).open()
 
-    driver.find_element(By.LINK_TEXT, "Users").click()
+    users.assert_headers("Email", "First name", "Last name")
 
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//th[contains(., 'Email')]")
-        )
-    )
 
-    driver.find_element(
-        By.XPATH,
-        '//*[@id="main-content"]/div/div/div[1]/div/a'
-    ).click()
+def test_create_user(authenticated_driver):
+    users = UsersPage(authenticated_driver).open()
+    email = unique_email()
 
-    email = f"{uuid.uuid4().hex[:8]}@example.com"
+    users.create_user(email)
 
-    inputs = driver.find_elements(By.TAG_NAME, "input")
+    assert users.has_text(email)
 
-    inputs[0].send_keys(email)
-    inputs[1].send_keys("Test")
-    inputs[2].send_keys("User")
 
-    driver.find_element(
-        By.XPATH,
-        '//button[@aria-label="Save"]'
-    ).click()
+def test_edit_user(authenticated_driver):
+    users = UsersPage(authenticated_driver).open()
+    email = unique_email()
 
-    driver.find_element(
-        By.XPATH,
-        f"//span[contains(text(), '{email}')]"
-    ).click()
+    users.create_user(email)
+    users.update_first_name(email, "Updated")
 
-    inputs = driver.find_elements(By.TAG_NAME, "input")
+    assert users.has_text("Updated")
 
-    inputs[1].clear()
-    inputs[1].send_keys("Updated")
 
-    driver.find_element(
-        By.XPATH,
-        '//button[@aria-label="Save"]'
-    ).click()
+def test_delete_user(authenticated_driver):
+    users = UsersPage(authenticated_driver).open()
+    email = unique_email()
 
-    assert "Updated" in driver.page_source  
+    users.create_user(email, first_name="Delete")
+    users.delete_user(email)
 
-def test_delete_user(driver, app_base_url):
-    driver.get(app_base_url)
+    assert not users.has_text(email)
 
-    login_page = LoginPage(driver)
-    login_page.login("test", "test")
 
-    driver.find_element(By.LINK_TEXT, "Users").click()
+def test_delete_all_users(authenticated_driver):
+    users = UsersPage(authenticated_driver).open()
+    email = unique_email()
 
-    driver.find_element(
-        By.XPATH,
-        '//*[@id="main-content"]/div/div/div[1]/div/a'
-    ).click()
+    users.create_user(email)
+    users.delete_all()
 
-    email = f"{uuid.uuid4().hex[:8]}@example.com"
-
-    inputs = driver.find_elements(By.TAG_NAME, "input")
-
-    inputs[0].send_keys(email)
-    inputs[1].send_keys("Delete")
-    inputs[2].send_keys("User")
-
-    driver.find_element(
-        By.CSS_SELECTOR,
-        'button[aria-label="Save"]'
-    ).click()
-
-    assert email in driver.page_source
-
-    driver.find_element(
-        By.XPATH,
-        f"//span[contains(text(), '{email}')]"
-    ).click()
-
-    driver.find_element(
-        By.CSS_SELECTOR,
-        'button[aria-label="Delete"]'
-    ).click()
-
-    driver.find_element(By.LINK_TEXT, "Users").click()
-    assert email not in driver.page_source    
-
-def test_delete_all_users(driver, app_base_url):
-    driver.get(app_base_url)
-
-    login_page = LoginPage(driver)
-    login_page.login("test", "test")
-
-    driver.find_element(By.LINK_TEXT, "Users").click()
-
-    driver.find_element(
-        By.CSS_SELECTOR,
-        'input[aria-label="Select all"]'
-    ).click()
-
-    driver.find_element(
-
-        By.CSS_SELECTOR,
-
-        'button[aria-label="Delete"]'
-
-    ).click()
-
-    WebDriverWait(driver, 10).until(
-
-        lambda d: "No Users yet." in d.page_source
-
-    )
-
-    assert "No Users yet." in driver.page_source
+    assert users.has_text("No Users yet.")

@@ -1,49 +1,25 @@
-"""Тесты входа и выхода."""
-
-import os
-import pytest
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+"""Login and logout tests."""
 
 try:
-    from pages import LoginPage, DashboardPage, PasswordDialog
+    from pages import DashboardPage, LoginPage, PasswordDialog
 except ImportError:
-    from .pages import LoginPage, DashboardPage, PasswordDialog
+    from .pages import DashboardPage, LoginPage, PasswordDialog
 
 
 def test_successful_login(driver, app_base_url):
-    """Проверяем вход."""
-    driver.get(app_base_url)
-    
-    login_page = LoginPage(driver)
-    login_page.login("test", "test")
-    
+    LoginPage(driver).open(app_base_url).login("test", "test")
+
     dashboard = DashboardPage(driver)
     assert dashboard.is_loaded()
     assert driver.current_url != app_base_url
 
 
-def test_login_and_logout(driver, app_base_url):
-    """Проверяем вход и выход."""
-    driver.get(app_base_url)
-    wait = WebDriverWait(driver, 10)
-    
-    login_page = LoginPage(driver)
-    login_page.login("test", "test")
-    
-    dashboard = DashboardPage(driver)
+def test_login_and_logout(authenticated_driver):
+    dashboard = DashboardPage(authenticated_driver)
     assert dashboard.is_loaded()
-    
-    try:
-        dialog = PasswordDialog(driver)
-        dialog.click_ok()
-    except:
-        pass
-    
+
+    PasswordDialog(authenticated_driver).close_if_present()
     dashboard.open_profile()
     dashboard.logout()
-    
-    wait.until(EC.presence_of_element_located((By.NAME, "username")))
-    assert driver.find_element(By.NAME, "username").is_displayed()
+
+    assert LoginPage(authenticated_driver).visible(LoginPage.USERNAME).is_displayed()
