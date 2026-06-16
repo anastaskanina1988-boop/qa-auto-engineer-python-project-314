@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from .pages import LoginPage, DashboardPage, PasswordDialog
 
 
 @pytest.fixture
@@ -24,20 +25,12 @@ def app_base_url():
 def test_successful_login(driver, app_base_url):
     """Проверяем, что можно войти в приложение."""
     driver.get(app_base_url)
-    wait = WebDriverWait(driver, 10)
     
-    # Находим поля для входа
-    username = driver.find_element(By.NAME, "username")
-    password = driver.find_element(By.NAME, "password")
-    login_btn = driver.find_element(By.TAG_NAME, "button")
+    login_page = LoginPage(driver)
+    login_page.login("test", "test")
     
-    # Вводим данные
-    username.send_keys("test")
-    password.send_keys("test")
-    login_btn.click()
-    
-    # Проверяем, что зашли
-    wait.until(EC.presence_of_element_located((By.TAG_NAME, "main")))
+    dashboard = DashboardPage(driver)
+    assert dashboard.is_loaded()
     assert driver.current_url != app_base_url
 
 
@@ -46,38 +39,23 @@ def test_login_and_logout(driver, app_base_url):
     driver.get(app_base_url)
     wait = WebDriverWait(driver, 10)
     
-    # Вход
-    username = driver.find_element(By.NAME, "username")
-    password = driver.find_element(By.NAME, "password")
-    login_btn = driver.find_element(By.TAG_NAME, "button")
+    login_page = LoginPage(driver)
+    login_page.login("test", "test")
     
-    username.send_keys("test")
-    password.send_keys("test")
-    login_btn.click()
+    dashboard = DashboardPage(driver)
+    assert dashboard.is_loaded()
     
-    wait.until(EC.presence_of_element_located((By.TAG_NAME, "main")))
-    
-    # Закрытие диалога если есть
+    # Закрытие диалога
     try:
-        ok = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'OK')]")),
-            timeout=2
-        )
-        ok.click()
+        dialog = PasswordDialog(driver)
+        dialog.click_ok()
     except:
         pass
     
     # Выход
-    profile = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Jane')]"))
-    )
-    profile.click()
+    dashboard.open_profile()
+    dashboard.logout()
     
-    logout = wait.until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, "li.logout"))
-    )
-    logout.click()
-    
-    # Проверяем, что вышли
+    # Проверяем, что на странице входа
     wait.until(EC.presence_of_element_located((By.NAME, "username")))
     assert driver.find_element(By.NAME, "username").is_displayed()
