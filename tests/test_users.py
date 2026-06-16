@@ -1,6 +1,7 @@
 
 import uuid
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 try:
     from pages import LoginPage
 except ImportError:
@@ -145,6 +146,35 @@ def test_delete_user(driver, app_base_url):
         By.CSS_SELECTOR,
         'button[aria-label="Delete"]'
     ).click()
-    
+
     driver.find_element(By.LINK_TEXT, "Users").click()
-    assert email not in driver.page_source      
+    assert email not in driver.page_source    
+
+def test_delete_all_users(driver, app_base_url):
+    driver.get(app_base_url)
+
+    login_page = LoginPage(driver)
+    login_page.login("test", "test")
+
+    driver.find_element(By.LINK_TEXT, "Users").click()
+
+    driver.find_element(
+        By.CSS_SELECTOR,
+        'input[aria-label="Select all"]'
+    ).click()
+
+    driver.find_element(
+
+        By.CSS_SELECTOR,
+
+        'button[aria-label="Delete"]'
+
+    ).click()
+
+    WebDriverWait(driver, 10).until(
+
+        lambda d: "No Users yet." in d.page_source
+
+    )
+
+    assert "No Users yet." in driver.page_source
