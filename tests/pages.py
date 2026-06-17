@@ -138,6 +138,18 @@ class AdminListPage(BasePage):
         for header in headers:
             self.find((By.XPATH, f"//th[contains(., '{header}')]"))
 
+    def assert_page_title(self, title):
+        self.visible(
+            (
+                By.XPATH,
+                "//*["
+                "self::h1 or self::h2 or self::h3 "
+                "or @id='react-admin-title' "
+                "or contains(@class, 'RaTitle-title')"
+                f"][normalize-space()='{title}']",
+            )
+        )
+
     def delete_all(self):
         self.open()
         self.click(self.SELECT_ALL)

@@ -13,7 +13,7 @@ def unique_task_title(prefix="Task"):
 def test_tasks_table_loaded(authenticated_driver):
     tasks = TasksPage(authenticated_driver).open()
 
-    assert tasks.has_text("Tasks")
+    tasks.assert_page_title("Tasks")
 
 
 def test_create_task(authenticated_driver):
