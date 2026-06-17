@@ -19,6 +19,11 @@ def test_tasks_table_loaded(authenticated_driver):
     tasks.assert_visible_texts(
         "Draft", "To Review", "To Be Fixed", "To Publish", "Published"
     )
+    tasks.assert_kanban_column_contains("Draft", "Task 11")
+    tasks.assert_kanban_column_contains("To Review", "Task 2")
+    tasks.assert_kanban_column_contains("To Be Fixed", "Task 1")
+    tasks.assert_kanban_column_contains("To Publish", "Task 3")
+    tasks.assert_kanban_column_contains("Published", "Task 4")
 
 
 def test_create_task(authenticated_driver):

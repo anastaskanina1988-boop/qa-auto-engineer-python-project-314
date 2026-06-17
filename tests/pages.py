@@ -157,6 +157,15 @@ class AdminListPage(BasePage):
         for text in texts:
             self.visible((By.XPATH, f"//*[normalize-space()='{text}']"))
 
+    def assert_kanban_column_contains(self, column, card_title):
+        self.visible(
+            (
+                By.XPATH,
+                "//div[./h6[normalize-space()="
+                f"'{column}'] and .//*[normalize-space()='{card_title}']]",
+            )
+        )
+
     def delete_all(self):
         self.open()
         self.click(self.SELECT_ALL)
