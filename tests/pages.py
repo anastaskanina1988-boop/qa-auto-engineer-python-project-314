@@ -167,6 +167,9 @@ class AdminListPage(BasePage):
     def assert_route(self, route):
         self.wait.until(lambda driver: driver.current_url.endswith(route))
 
+    def assert_browser_title(self, title):
+        self.wait.until(EC.title_is(title))
+
     def assert_active_menu_item(self, text):
         self.visible(
             (
