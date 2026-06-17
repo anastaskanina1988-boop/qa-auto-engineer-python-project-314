@@ -34,9 +34,27 @@ class BasePage:
     def replace_text(self, field, value):
         shortcut = Keys.COMMAND if platform.system() == "Darwin" else Keys.CONTROL
         field.click()
-        field.send_keys(shortcut, "a")
+        field.clear()
+        field.send_keys(shortcut + "a")
         field.send_keys(Keys.BACKSPACE)
         field.send_keys(value)
+        if field.get_attribute("value") != value:
+            self.driver.execute_script(
+                """
+                const element = arguments[0];
+                const value = arguments[1];
+                const previousValue = element.value;
+                element.value = value;
+                const tracker = element._valueTracker;
+                if (tracker) {
+                    tracker.setValue(previousValue);
+                }
+                element.dispatchEvent(new Event('input', { bubbles: true }));
+                element.dispatchEvent(new Event('change', { bubbles: true }));
+                """,
+                field,
+                value,
+            )
 
     def wait_for_text(self, text):
         self.wait.until(lambda driver: text in driver.page_source)
@@ -273,13 +291,15 @@ class TasksPage(AdminListPage):
             self.select_combobox_option(1)
 
         self.save()
+        self.open()
         self.wait_for_text(title)
 
-    def rename_last_task(self, new_title):
+    def rename_task(self, current_title, new_title):
         self.open()
-        self.open_last_edit_form()
+        self.open_edit_form(current_title)
         self.fill(self.TITLE, new_title)
         self.save()
+        self.open()
         self.wait_for_text(new_title)
 
     def delete_last_task(self):
@@ -292,6 +312,17 @@ class TasksPage(AdminListPage):
         self.wait.until(EC.presence_of_element_located(self.EDIT_LINKS))
         edit_links = self.driver.find_elements(*self.EDIT_LINKS)
         edit_links[-1].click()
+        self.find(self.SAVE)
+
+    def open_edit_form(self, title):
+        self.click(
+            (
+                By.XPATH,
+                "//*[normalize-space()="
+                f"'{title}']/ancestor::*[@role='button'][1]"
+                "//a[@aria-label='Edit']",
+            )
+        )
         self.find(self.SAVE)
 
     def select_combobox_option(self, index):

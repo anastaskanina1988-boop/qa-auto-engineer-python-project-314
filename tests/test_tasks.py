@@ -35,9 +35,10 @@ def test_create_task(authenticated_driver):
     tasks = TasksPage(authenticated_driver).open()
     title = unique_task_title()
 
-    tasks.create_task(title)
+    tasks.create_task(title, with_status=True)
 
     assert tasks.has_text(title)
+    tasks.assert_kanban_column_contains("Published", title)
 
 
 def test_edit_task(authenticated_driver):
@@ -46,9 +47,10 @@ def test_edit_task(authenticated_driver):
     updated_title = unique_task_title("Updated Task")
 
     tasks.create_task(title, with_status=True)
-    tasks.rename_last_task(updated_title)
+    tasks.rename_task(title, updated_title)
 
     assert tasks.has_text(updated_title)
+    tasks.assert_kanban_column_contains("Published", updated_title)
 
 
 def test_delete_task(authenticated_driver):
