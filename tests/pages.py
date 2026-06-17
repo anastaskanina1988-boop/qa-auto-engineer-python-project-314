@@ -177,6 +177,7 @@ class LabelsPage(AdminListPage):
         self.open_row(current_name)
         self.fill_input_at(0, new_name)
         self.save()
+        self.open()
         self.wait_for_row(new_name)
 
     def delete_label(self, name):
