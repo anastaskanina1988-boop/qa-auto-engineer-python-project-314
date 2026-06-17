@@ -13,7 +13,12 @@ def unique_task_title(prefix="Task"):
 def test_tasks_table_loaded(authenticated_driver):
     tasks = TasksPage(authenticated_driver).open()
 
+    tasks.assert_route("#/tasks")
     tasks.assert_page_title("Tasks")
+    tasks.assert_filter_labels("Assignee", "Status", "Label")
+    tasks.assert_visible_texts(
+        "Draft", "To Review", "To Be Fixed", "To Publish", "Published"
+    )
 
 
 def test_create_task(authenticated_driver):

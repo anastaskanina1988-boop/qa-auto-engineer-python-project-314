@@ -142,13 +142,20 @@ class AdminListPage(BasePage):
         self.visible(
             (
                 By.XPATH,
-                "//*["
-                "self::h1 or self::h2 or self::h3 "
-                "or @id='react-admin-title' "
-                "or contains(@class, 'RaTitle-title')"
-                f"][normalize-space()='{title}']",
+                f"//*[@id='react-admin-title' and normalize-space()='{title}']",
             )
         )
+
+    def assert_route(self, route):
+        self.wait.until(lambda driver: driver.current_url.endswith(route))
+
+    def assert_filter_labels(self, *labels):
+        for label in labels:
+            self.visible((By.XPATH, f"//label[normalize-space()='{label}']"))
+
+    def assert_visible_texts(self, *texts):
+        for text in texts:
+            self.visible((By.XPATH, f"//*[normalize-space()='{text}']"))
 
     def delete_all(self):
         self.open()
