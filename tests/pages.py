@@ -167,6 +167,23 @@ class AdminListPage(BasePage):
     def assert_route(self, route):
         self.wait.until(lambda driver: driver.current_url.endswith(route))
 
+    def assert_active_menu_item(self, text):
+        self.visible(
+            (
+                By.XPATH,
+                "//a[contains(@class, 'RaMenuItemLink-active') "
+                f"and normalize-space()='{text}']",
+            )
+        )
+
+    def assert_create_link(self, route):
+        self.visible(
+            (
+                By.XPATH,
+                f"//a[@aria-label='Create' and contains(@href, '{route}')]",
+            )
+        )
+
     def assert_filter_labels(self, *labels):
         for label in labels:
             self.visible((By.XPATH, f"//label[normalize-space()='{label}']"))

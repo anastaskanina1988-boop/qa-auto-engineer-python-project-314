@@ -15,6 +15,8 @@ def test_tasks_table_loaded(authenticated_driver):
 
     tasks.assert_route("#/tasks")
     tasks.assert_page_title("Tasks")
+    tasks.assert_active_menu_item("Tasks")
+    tasks.assert_create_link("#/tasks/create")
     tasks.assert_filter_labels("Assignee", "Status", "Label")
     tasks.assert_visible_texts(
         "Draft", "To Review", "To Be Fixed", "To Publish", "Published"
