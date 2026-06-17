@@ -166,6 +166,16 @@ class AdminListPage(BasePage):
             )
         )
 
+    def assert_kanban_card_in_column(self, column_id, card_id, card_title):
+        self.visible(
+            (
+                By.XPATH,
+                f"//*[@data-rfd-droppable-id='{column_id}']"
+                f"//*[@data-rfd-draggable-id='{card_id}' "
+                f"and .//*[normalize-space()='{card_title}']]",
+            )
+        )
+
     def delete_all(self):
         self.open()
         self.click(self.SELECT_ALL)
