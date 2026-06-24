@@ -89,6 +89,13 @@ class AdminListPage(BasePage):
             )
         )
 
+    def assert_refresh_button_hidden(self):
+        self.wait.until(
+            EC.invisibility_of_element_located(
+                (By.CSS_SELECTOR, 'header button[aria-label="Refresh"]')
+            )
+        )
+
     def assert_filter_labels(self, *labels):
         for label in labels:
             self.visible((By.XPATH, f"//label[normalize-space()='{label}']"))
