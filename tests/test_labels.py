@@ -1,9 +1,9 @@
 import uuid
 
 try:
-    from pages import LabelsPage
+    from labels_page import LabelsPage
 except ImportError:
-    from .pages import LabelsPage
+    from .labels_page import LabelsPage
 
 
 def unique_label_name(prefix="Label"):

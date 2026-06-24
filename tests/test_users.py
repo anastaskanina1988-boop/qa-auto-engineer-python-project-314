@@ -1,9 +1,9 @@
 import uuid
 
 try:
-    from pages import UsersPage
+    from users_page import UsersPage
 except ImportError:
-    from .pages import UsersPage
+    from .users_page import UsersPage
 
 
 def unique_email():

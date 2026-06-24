@@ -7,9 +7,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 try:
-    from pages import LoginPage
+    from login_page import LoginPage
 except ImportError:
-    from .pages import LoginPage
+    from .login_page import LoginPage
 
 
 @pytest.fixture(scope="session")

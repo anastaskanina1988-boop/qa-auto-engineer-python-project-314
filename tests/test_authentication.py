@@ -1,9 +1,13 @@
 """Login and logout tests."""
 
 try:
-    from pages import DashboardPage, LoginPage, PasswordDialog
+    from dashboard_page import DashboardPage
+    from login_page import LoginPage
+    from password_dialog import PasswordDialog
 except ImportError:
-    from .pages import DashboardPage, LoginPage, PasswordDialog
+    from .dashboard_page import DashboardPage
+    from .login_page import LoginPage
+    from .password_dialog import PasswordDialog
 
 
 def test_successful_login(driver, app_base_url):

@@ -1,9 +1,9 @@
 import uuid
 
 try:
-    from pages import StatusesPage
+    from statuses_page import StatusesPage
 except ImportError:
-    from .pages import StatusesPage
+    from .statuses_page import StatusesPage
 
 
 def unique_status(prefix="Status"):
