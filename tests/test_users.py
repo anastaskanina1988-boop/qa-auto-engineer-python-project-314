@@ -20,9 +20,11 @@ def test_create_user(authenticated_driver):
     users = UsersPage(authenticated_driver).open()
     email = unique_email()
 
-    users.create_user(email)
+    users.create_user(email, "Created", "Person")
 
     assert users.has_text(email)
+    assert users.has_text("Created")
+    assert users.has_text("Person")
 
 
 def test_create_user_validates_email(authenticated_driver):

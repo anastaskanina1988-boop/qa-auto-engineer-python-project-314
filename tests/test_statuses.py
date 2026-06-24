@@ -24,6 +24,7 @@ def test_create_status(authenticated_driver):
     statuses.create_status(name, slug)
 
     assert statuses.has_text(name)
+    assert statuses.has_text(slug)
 
 
 def test_edit_status(authenticated_driver):
