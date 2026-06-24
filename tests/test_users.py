@@ -25,6 +25,19 @@ def test_create_user(authenticated_driver):
     assert users.has_text(email)
 
 
+def test_create_user_validates_email(authenticated_driver):
+    users = UsersPage(authenticated_driver).open()
+
+    users.open_create_form()
+    users.fill_input_at(0, "invalid-email")
+    users.fill_input_at(1, "Invalid")
+    users.fill_input_at(2, "User")
+    users.save()
+
+    users.assert_route("#/users/create")
+    users.wait_for_text("Incorrect email format")
+
+
 def test_edit_user(authenticated_driver):
     users = UsersPage(authenticated_driver).open()
     email = unique_email()
