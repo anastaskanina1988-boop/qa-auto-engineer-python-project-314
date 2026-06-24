@@ -15,6 +15,17 @@ class DashboardPage(BasePage):
         self.find(self.MAIN)
         return True
 
+    def assert_title(self, title):
+        self.visible(
+            (
+                By.XPATH,
+                f"//*[@id='react-admin-title' and normalize-space()='{title}']",
+            )
+        )
+
+    def assert_visible_text(self, text):
+        self.visible((By.XPATH, f"//*[normalize-space()='{text}']"))
+
     def open_profile(self):
         self.click(self.PROFILE)
 

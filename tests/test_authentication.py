@@ -17,6 +17,9 @@ def test_successful_login(driver, app_base_url):
 
     assert dashboard.is_loaded()
     assert driver.current_url != app_base_url
+    assert driver.title == "Task manager"
+    dashboard.assert_title("Welcome to the administration")
+    dashboard.assert_visible_text("Lorem ipsum sic dolor amet...")
     assert dashboard.visible(DashboardPage.PROFILE).is_displayed()
 
 
