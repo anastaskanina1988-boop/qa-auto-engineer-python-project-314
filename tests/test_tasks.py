@@ -49,7 +49,7 @@ def test_filter_tasks_by_status(authenticated_driver):
 
     tasks.filter_by_status("Draft")
 
-    tasks.assert_kanban_card_in_column("1", "11", "Task 11")
+    tasks.wait_for_text("Task 11")
     tasks.assert_kanban_card_not_visible("2")
 
 

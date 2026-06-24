@@ -29,6 +29,7 @@ class TasksPage(AdminListPage):
         "//label[normalize-space()='Label']"
         "/ancestor::div[contains(@class, 'MuiFormControl-root')][1]",
     )
+
     def verify_filters_visible(self):
         self.open()
         filters = {
