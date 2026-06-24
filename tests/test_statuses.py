@@ -15,6 +15,7 @@ def test_statuses_table_loaded(authenticated_driver):
     statuses = StatusesPage(authenticated_driver).open()
 
     statuses.assert_headers("Id", "Name", "Slug", "Created at")
+    statuses.assert_visible_texts("Draft", "draft", "Published", "published")
 
 
 def test_create_status(authenticated_driver):

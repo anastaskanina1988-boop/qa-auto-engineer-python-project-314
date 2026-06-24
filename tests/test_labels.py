@@ -14,6 +14,7 @@ def test_labels_table_loaded(authenticated_driver):
     labels = LabelsPage(authenticated_driver).open()
 
     labels.assert_headers("Id", "Name", "Created at")
+    labels.assert_visible_texts("bug", "feature", "enhancement")
 
 
 def test_create_label(authenticated_driver):

@@ -14,6 +14,7 @@ def test_users_table_loaded(authenticated_driver):
     users = UsersPage(authenticated_driver).open()
 
     users.assert_headers("Id", "Email", "First name", "Last name", "Created at")
+    users.assert_visible_texts("john@google.com", "John", "Doe")
 
 
 def test_create_user(authenticated_driver):
