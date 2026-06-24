@@ -13,7 +13,7 @@ def unique_label_name(prefix="Label"):
 def test_labels_table_loaded(authenticated_driver):
     labels = LabelsPage(authenticated_driver).open()
 
-    labels.assert_headers("Name")
+    labels.assert_headers("Id", "Name", "Created at")
 
 
 def test_create_label(authenticated_driver):

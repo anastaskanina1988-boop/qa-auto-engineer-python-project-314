@@ -14,7 +14,7 @@ def unique_status(prefix="Status"):
 def test_statuses_table_loaded(authenticated_driver):
     statuses = StatusesPage(authenticated_driver).open()
 
-    statuses.assert_headers("Name", "Slug")
+    statuses.assert_headers("Id", "Name", "Slug", "Created at")
 
 
 def test_create_status(authenticated_driver):
