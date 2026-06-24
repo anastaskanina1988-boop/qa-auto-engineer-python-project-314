@@ -49,8 +49,26 @@ def test_filter_tasks_by_status(authenticated_driver):
 
     tasks.filter_by_status("Draft")
 
-    tasks.wait_for_text("Task 11")
+    tasks.assert_kanban_card_visible("11", "Task 11")
     tasks.assert_kanban_card_not_visible("2")
+
+
+def test_filter_tasks_by_assignee(authenticated_driver):
+    tasks = TasksPage(authenticated_driver).open()
+
+    tasks.filter_by_assignee("john@google.com")
+
+    tasks.assert_kanban_card_visible("11", "Task 11")
+    tasks.assert_kanban_card_not_visible("12")
+
+
+def test_filter_tasks_by_label(authenticated_driver):
+    tasks = TasksPage(authenticated_driver).open()
+
+    tasks.filter_by_label("bug")
+
+    tasks.assert_kanban_card_visible("7", "Task 7")
+    tasks.assert_kanban_card_not_visible("11")
 
 
 def test_edit_task(authenticated_driver):

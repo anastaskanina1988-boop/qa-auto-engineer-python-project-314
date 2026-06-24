@@ -46,16 +46,42 @@ class TasksPage(AdminListPage):
         return True
 
     def filter_by_status(self, status):
+        self.select_filter_option(1, status, "status_id")
+
+    def filter_by_assignee(self, assignee):
+        self.select_filter_option(0, assignee, "assignee_id")
+
+    def filter_by_label(self, label):
+        self.select_filter_option(2, label, "label_id")
+
+    def select_filter_option(self, index, option_text, filter_key):
         comboboxes = self.wait.until(
             lambda driver: (
                 elements
-                if len(elements := driver.find_elements(*self.COMBOBOXES)) > 1
+                if len(elements := driver.find_elements(*self.COMBOBOXES)) > index
                 else False
             )
         )
-        comboboxes[1].click()
-        self.click((By.XPATH, f"//li[@role='option' and normalize-space()='{status}']"))
-        self.wait.until(lambda driver: "status_id" in driver.current_url)
+        comboboxes[index].click()
+        option = self.wait.until(
+            EC.visibility_of_element_located(
+                (
+                    By.XPATH,
+                    f"//li[@role='option' and normalize-space()='{option_text}']",
+                )
+            )
+        )
+        self.driver.execute_script("arguments[0].click();", option)
+        self.wait.until(lambda driver: filter_key in driver.current_url)
+
+    def assert_kanban_card_visible(self, card_id, card_title):
+        self.visible(
+            (
+                By.XPATH,
+                f"//*[@data-rfd-draggable-id='{card_id}' "
+                f"and .//*[normalize-space()='{card_title}']]",
+            )
+        )
 
     def assert_kanban_card_not_visible(self, card_id):
         self.wait.until(
