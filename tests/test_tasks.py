@@ -109,6 +109,15 @@ def test_tasks_sorted_by_index_in_columns(authenticated_driver):
     tasks.assert_kanban_column_card_order("5", "4", "15", "10")
 
 
+def test_move_task_to_another_column(authenticated_driver):
+    tasks = TasksPage(authenticated_driver).open()
+
+    tasks.move_card_to_next_column("11")
+
+    tasks.assert_kanban_card_not_in_column("1", "11")
+    tasks.assert_kanban_card_in_column("2", "11", "Task 11")
+
+
 def test_edit_task(authenticated_driver):
     tasks = TasksPage(authenticated_driver).open()
     title = unique_task_title()

@@ -123,6 +123,17 @@ class AdminListPage(BasePage):
             )
         )
 
+    def assert_kanban_card_not_in_column(self, column_id, card_id):
+        self.wait.until(
+            EC.invisibility_of_element_located(
+                (
+                    By.XPATH,
+                    f"//*[@data-rfd-droppable-id='{column_id}']"
+                    f"//*[@data-rfd-draggable-id='{card_id}']",
+                )
+            )
+        )
+
     def assert_kanban_column_card_order(self, column_id, *card_ids):
         cards = self.wait.until(
             lambda driver: driver.find_elements(

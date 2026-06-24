@@ -163,6 +163,13 @@ class TasksPage(AdminListPage):
         )
         self.wait.until(lambda driver: f"#/tasks/{card_id}/show" in driver.current_url)
 
+    def move_card_to_next_column(self, card_id):
+        card = self.visible((By.XPATH, f"//*[@data-rfd-draggable-id='{card_id}']"))
+        self.driver.execute_script("arguments[0].focus();", card)
+        card.send_keys(Keys.SPACE)
+        card.send_keys(Keys.ARROW_RIGHT)
+        card.send_keys(Keys.SPACE)
+
     def open_show_form_by_title(self, title):
         self.click(
             (
