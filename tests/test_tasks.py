@@ -44,6 +44,18 @@ def test_create_task(authenticated_driver):
     tasks.assert_kanban_column_contains("Published", title)
 
 
+def test_create_task_with_details(authenticated_driver):
+    tasks = TasksPage(authenticated_driver).open()
+    title = unique_task_title("Detailed Task")
+    content = f"Details {uuid.uuid4().hex[:6]}"
+
+    tasks.create_task_with_details(title, content)
+
+    tasks.assert_kanban_column_contains("Published", title)
+    tasks.open_show_form_by_title(title)
+    tasks.assert_visible_texts("john@google.com", title, content, "bug")
+
+
 def test_filter_tasks_by_status(authenticated_driver):
     tasks = TasksPage(authenticated_driver).open()
 

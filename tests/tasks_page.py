@@ -1,4 +1,5 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 
 try:
@@ -12,6 +13,7 @@ class TasksPage(AdminListPage):
 
     EDIT_LINKS = (By.CSS_SELECTOR, 'a[aria-label="Edit"]')
     TITLE = (By.NAME, "title")
+    CONTENT = (By.NAME, "content")
     COMBOBOXES = (By.CSS_SELECTOR, 'div[role="combobox"]')
     OPTION = (By.XPATH, "//li[@role='option']")
     FILTER_ASSIGNEE = (
@@ -72,6 +74,13 @@ class TasksPage(AdminListPage):
             )
         )
         self.driver.execute_script("arguments[0].click();", option)
+        self.driver.switch_to.active_element.send_keys(Keys.ESCAPE)
+        self.wait.until(
+            lambda driver: all(
+                combobox.get_attribute("aria-expanded") == "false"
+                for combobox in driver.find_elements(*self.COMBOBOXES)
+            )
+        )
         self.wait.until(lambda driver: filter_key in driver.current_url)
 
     def assert_kanban_card_visible(self, card_id, card_title):
@@ -99,6 +108,17 @@ class TasksPage(AdminListPage):
             self.select_combobox_option(1)
 
         self.save()
+        self.open()
+        self.wait_for_text(title)
+
+    def create_task_with_details(self, title, content):
+        self.open_create_form()
+        self.select_combobox_option_by_text(0, "john@google.com")
+        self.fill(self.TITLE, title)
+        self.fill(self.CONTENT, content)
+        self.select_combobox_option_by_text(1, "Published")
+        self.select_combobox_option_by_text(2, "bug")
+        self.driver.execute_script("arguments[0].click();", self.find(self.SAVE))
         self.open()
         self.wait_for_text(title)
 
@@ -143,9 +163,39 @@ class TasksPage(AdminListPage):
         )
         self.wait.until(lambda driver: f"#/tasks/{card_id}/show" in driver.current_url)
 
+    def open_show_form_by_title(self, title):
+        self.click(
+            (
+                By.XPATH,
+                "//*[normalize-space()="
+                f"'{title}']/ancestor::*[@role='button'][1]"
+                "//a[@aria-label='Show']",
+            )
+        )
+        self.wait.until(lambda driver: "/show" in driver.current_url)
+
     def select_combobox_option(self, index):
         comboboxes = self.wait.until(
             lambda driver: driver.find_elements(*self.COMBOBOXES)
         )
         comboboxes[index].click()
         self.click(self.OPTION)
+
+    def select_combobox_option_by_text(self, index, option_text):
+        comboboxes = self.wait.until(
+            lambda driver: (
+                elements
+                if len(elements := driver.find_elements(*self.COMBOBOXES)) > index
+                else False
+            )
+        )
+        comboboxes[index].click()
+        option = self.wait.until(
+            EC.visibility_of_element_located(
+                (
+                    By.XPATH,
+                    f"//li[@role='option' and normalize-space()='{option_text}']",
+                )
+            )
+        )
+        self.driver.execute_script("arguments[0].click();", option)
