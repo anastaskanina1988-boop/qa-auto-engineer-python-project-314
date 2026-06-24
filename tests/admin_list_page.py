@@ -116,6 +116,20 @@ class AdminListPage(BasePage):
             )
         )
 
+    def assert_kanban_column_card_order(self, column_id, *card_ids):
+        cards = self.wait.until(
+            lambda driver: driver.find_elements(
+                By.CSS_SELECTOR,
+                f"[data-rfd-droppable-id='{column_id}'] "
+                "[data-rfd-draggable-id]",
+            )
+        )
+        actual_ids = [
+            card.get_attribute("data-rfd-draggable-id")
+            for card in cards[: len(card_ids)]
+        ]
+        assert actual_ids == list(card_ids)
+
     def delete_all(self):
         self.open()
         self.click(self.SELECT_ALL)

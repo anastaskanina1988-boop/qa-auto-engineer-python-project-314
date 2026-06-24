@@ -86,6 +86,16 @@ def test_show_task_details(authenticated_driver):
     )
 
 
+def test_tasks_sorted_by_index_in_columns(authenticated_driver):
+    tasks = TasksPage(authenticated_driver).open()
+
+    tasks.assert_kanban_column_card_order("1", "11", "5", "6")
+    tasks.assert_kanban_column_card_order("2", "2", "12", "7")
+    tasks.assert_kanban_column_card_order("3", "1", "13", "8")
+    tasks.assert_kanban_column_card_order("4", "3", "14", "9")
+    tasks.assert_kanban_column_card_order("5", "4", "15", "10")
+
+
 def test_edit_task(authenticated_driver):
     tasks = TasksPage(authenticated_driver).open()
     title = unique_task_title()
