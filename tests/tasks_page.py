@@ -133,6 +133,16 @@ class TasksPage(AdminListPage):
         )
         self.find(self.SAVE)
 
+    def open_show_form(self, card_id):
+        self.click(
+            (
+                By.XPATH,
+                f"//*[@data-rfd-draggable-id='{card_id}']"
+                "//a[@aria-label='Show']",
+            )
+        )
+        self.wait.until(lambda driver: f"#/tasks/{card_id}/show" in driver.current_url)
+
     def select_combobox_option(self, index):
         comboboxes = self.wait.until(
             lambda driver: driver.find_elements(*self.COMBOBOXES)

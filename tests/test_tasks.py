@@ -71,6 +71,21 @@ def test_filter_tasks_by_label(authenticated_driver):
     tasks.assert_kanban_card_not_visible("11")
 
 
+def test_show_task_details(authenticated_driver):
+    tasks = TasksPage(authenticated_driver).open()
+
+    tasks.open_show_form("11")
+
+    tasks.assert_visible_texts(
+        "john@google.com",
+        "Task 11",
+        "Description of task 11",
+        "bug",
+        "feature",
+        "enhancement",
+    )
+
+
 def test_edit_task(authenticated_driver):
     tasks = TasksPage(authenticated_driver).open()
     title = unique_task_title()

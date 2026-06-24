@@ -20,6 +20,7 @@ class UsersPage(AdminListPage):
         self.open_row(email)
         self.fill_input_at(1, first_name)
         self.save()
+        self.open()
         self.wait_for_text(first_name)
 
     def delete_user(self, email):
