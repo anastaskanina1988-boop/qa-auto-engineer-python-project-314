@@ -29,7 +29,6 @@ class TasksPage(AdminListPage):
         "//label[normalize-space()='Label']"
         "/ancestor::div[contains(@class, 'MuiFormControl-root')][1]",
     )
-
     def verify_filters_visible(self):
         self.open()
         filters = {
@@ -44,6 +43,25 @@ class TasksPage(AdminListPage):
                 return False
 
         return True
+
+    def filter_by_status(self, status):
+        comboboxes = self.wait.until(
+            lambda driver: (
+                elements
+                if len(elements := driver.find_elements(*self.COMBOBOXES)) > 1
+                else False
+            )
+        )
+        comboboxes[1].click()
+        self.click((By.XPATH, f"//li[@role='option' and normalize-space()='{status}']"))
+        self.wait.until(lambda driver: "status_id" in driver.current_url)
+
+    def assert_kanban_card_not_visible(self, card_id):
+        self.wait.until(
+            EC.invisibility_of_element_located(
+                (By.CSS_SELECTOR, f"[data-rfd-draggable-id='{card_id}']")
+            )
+        )
 
     def create_task(self, title, with_status=False):
         self.open_create_form()

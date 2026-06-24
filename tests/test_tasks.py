@@ -44,6 +44,15 @@ def test_create_task(authenticated_driver):
     tasks.assert_kanban_column_contains("Published", title)
 
 
+def test_filter_tasks_by_status(authenticated_driver):
+    tasks = TasksPage(authenticated_driver).open()
+
+    tasks.filter_by_status("Draft")
+
+    tasks.assert_kanban_card_in_column("1", "11", "Task 11")
+    tasks.assert_kanban_card_not_visible("2")
+
+
 def test_edit_task(authenticated_driver):
     tasks = TasksPage(authenticated_driver).open()
     title = unique_task_title()
