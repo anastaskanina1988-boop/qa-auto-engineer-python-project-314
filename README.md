@@ -1,9 +1,8 @@
 # QA Auto Engineer Python Project
 
 [![Hexlet check](https://github.com/anastaskanina1988-boop/qa-auto-engineer-python-project-314/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/anastaskanina1988-boop/qa-auto-engineer-python-project-314/actions/workflows/hexlet-check.yml)
-![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)
-![Selenium](https://img.shields.io/badge/Selenium-4-43B02A?logo=selenium&logoColor=white)
-![pytest](https://img.shields.io/badge/pytest-9-0A9EDC?logo=pytest&logoColor=white)
+[![Tests and lint](https://github.com/anastaskanina1988-boop/qa-auto-engineer-python-project-314/actions/workflows/ci.yml/badge.svg)](https://github.com/anastaskanina1988-boop/qa-auto-engineer-python-project-314/actions/workflows/ci.yml)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=anastaskanina1988-boop_qa-auto-engineer-python-project-314&metric=coverage)](https://sonarcloud.io/summary/new_code?id=anastaskanina1988-boop_qa-auto-engineer-python-project-314)
 
 Автотесты для учебного приложения Task Manager: React Admin доска задач с пользователями, статусами, метками и kanban-представлением.
 
