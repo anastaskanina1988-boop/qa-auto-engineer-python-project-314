@@ -1,13 +1,5 @@
-import uuid
-
-try:
-    from users_page import UsersPage
-except ImportError:
-    from .users_page import UsersPage
-
-
-def unique_email():
-    return f"{uuid.uuid4().hex[:8]}@example.com"
+from tests.pages.users_page import UsersPage
+from tests.utils.generators import unique_email
 
 
 def test_users_table_loaded(authenticated_driver):

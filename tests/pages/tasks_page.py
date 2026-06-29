@@ -2,10 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 
-try:
-    from .admin_list_page import AdminListPage
-except ImportError:
-    from admin_list_page import AdminListPage
+from .admin_list_page import AdminListPage
 
 
 class TasksPage(AdminListPage):

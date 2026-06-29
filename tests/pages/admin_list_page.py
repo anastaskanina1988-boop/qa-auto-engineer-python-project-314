@@ -1,10 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
-try:
-    from .base_page import BasePage
-except ImportError:
-    from base_page import BasePage
+from .base_page import BasePage
 
 
 class AdminListPage(BasePage):

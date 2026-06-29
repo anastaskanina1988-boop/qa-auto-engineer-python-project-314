@@ -1,10 +1,7 @@
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 
-try:
-    from .base_page import BasePage
-except ImportError:
-    from base_page import BasePage
+from .base_page import BasePage
 
 
 class PasswordDialog(BasePage):

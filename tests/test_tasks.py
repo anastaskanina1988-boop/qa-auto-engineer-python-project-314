@@ -1,13 +1,5 @@
-import uuid
-
-try:
-    from tasks_page import TasksPage
-except ImportError:
-    from .tasks_page import TasksPage
-
-
-def unique_task_title(prefix="Task"):
-    return f"{prefix} {uuid.uuid4().hex[:6]}"
+from tests.pages.tasks_page import TasksPage
+from tests.utils.generators import unique_task_title
 
 
 def test_tasks_table_loaded(authenticated_driver):
@@ -48,7 +40,7 @@ def test_create_task(authenticated_driver):
 def test_create_task_with_details(authenticated_driver):
     tasks = TasksPage(authenticated_driver).open()
     title = unique_task_title("Detailed Task")
-    content = f"Details {uuid.uuid4().hex[:6]}"
+    content = unique_task_title("Details")
 
     tasks.create_task_with_details(title, content)
 
@@ -138,3 +130,4 @@ def test_delete_task(authenticated_driver):
     tasks.delete_last_task()
 
     assert tasks.has_text("Element deleted")
+    tasks.assert_text_absent(title)

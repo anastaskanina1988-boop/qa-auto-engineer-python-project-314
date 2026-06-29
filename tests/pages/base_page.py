@@ -57,3 +57,6 @@ class BasePage:
 
     def has_text(self, text):
         return text in self.driver.page_source
+
+    def assert_text_absent(self, text):
+        self.wait.until(lambda driver: text not in driver.page_source)

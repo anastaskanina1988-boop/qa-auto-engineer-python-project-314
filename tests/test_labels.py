@@ -1,13 +1,5 @@
-import uuid
-
-try:
-    from labels_page import LabelsPage
-except ImportError:
-    from .labels_page import LabelsPage
-
-
-def unique_label_name(prefix="Label"):
-    return f"{prefix} {uuid.uuid4().hex[:6]}"
+from tests.pages.labels_page import LabelsPage
+from tests.utils.generators import unique_label_name
 
 
 def test_labels_table_loaded(authenticated_driver):

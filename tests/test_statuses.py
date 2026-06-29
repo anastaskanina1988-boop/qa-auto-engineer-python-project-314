@@ -1,14 +1,5 @@
-import uuid
-
-try:
-    from statuses_page import StatusesPage
-except ImportError:
-    from .statuses_page import StatusesPage
-
-
-def unique_status(prefix="Status"):
-    suffix = uuid.uuid4().hex[:6]
-    return f"{prefix} {suffix}", f"status_{suffix}"
+from tests.pages.statuses_page import StatusesPage
+from tests.utils.generators import unique_status
 
 
 def test_statuses_table_loaded(authenticated_driver):

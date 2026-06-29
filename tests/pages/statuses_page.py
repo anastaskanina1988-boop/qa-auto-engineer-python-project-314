@@ -1,7 +1,4 @@
-try:
-    from .admin_list_page import AdminListPage
-except ImportError:
-    from admin_list_page import AdminListPage
+from .admin_list_page import AdminListPage
 
 
 class StatusesPage(AdminListPage):
@@ -26,4 +23,4 @@ class StatusesPage(AdminListPage):
         self.open_row(name)
         self.delete()
         self.open()
-        self.wait.until(lambda driver: name not in driver.page_source)
+        self.assert_text_absent(name)

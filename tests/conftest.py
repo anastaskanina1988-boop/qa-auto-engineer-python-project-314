@@ -6,10 +6,7 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-try:
-    from login_page import LoginPage
-except ImportError:
-    from .login_page import LoginPage
+from tests.pages.login_page import LoginPage
 
 
 @pytest.fixture(scope="session")

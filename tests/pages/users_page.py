@@ -1,7 +1,4 @@
-try:
-    from .admin_list_page import AdminListPage
-except ImportError:
-    from admin_list_page import AdminListPage
+from .admin_list_page import AdminListPage
 
 
 class UsersPage(AdminListPage):
@@ -27,4 +24,4 @@ class UsersPage(AdminListPage):
         self.open_row(email)
         self.delete()
         self.open()
-        self.wait.until(lambda driver: email not in driver.page_source)
+        self.assert_text_absent(email)

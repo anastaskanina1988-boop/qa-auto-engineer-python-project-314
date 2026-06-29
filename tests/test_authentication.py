@@ -1,13 +1,8 @@
 """Login and logout tests."""
 
-try:
-    from dashboard_page import DashboardPage
-    from login_page import LoginPage
-    from password_dialog import PasswordDialog
-except ImportError:
-    from .dashboard_page import DashboardPage
-    from .login_page import LoginPage
-    from .password_dialog import PasswordDialog
+from tests.pages.dashboard_page import DashboardPage
+from tests.pages.login_page import LoginPage
+from tests.pages.password_dialog import PasswordDialog
 
 
 def test_successful_login(driver, app_base_url):
@@ -21,7 +16,6 @@ def test_successful_login(driver, app_base_url):
     dashboard.assert_title("Welcome to the administration")
     dashboard.assert_visible_text("Lorem ipsum sic dolor amet...")
     assert dashboard.visible(DashboardPage.PROFILE).is_displayed()
-
 
 
 def test_login_and_logout(authenticated_driver):
