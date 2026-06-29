@@ -14,19 +14,16 @@ class TasksPage(AdminListPage):
     COMBOBOXES = (By.CSS_SELECTOR, 'div[role="combobox"]')
     OPTION = (By.XPATH, "//li[@role='option']")
     FILTER_ASSIGNEE = (
-        By.XPATH,
-        "//label[normalize-space()='Assignee']"
-        "/ancestor::div[contains(@class, 'MuiFormControl-root')][1]",
+        By.CSS_SELECTOR,
+        '[data-source="assignee_id"]',
     )
     FILTER_STATUS = (
-        By.XPATH,
-        "//label[normalize-space()='Status']"
-        "/ancestor::div[contains(@class, 'MuiFormControl-root')][1]",
+        By.CSS_SELECTOR,
+        '[data-source="status_id"]',
     )
     FILTER_LABEL = (
-        By.XPATH,
-        "//label[normalize-space()='Label']"
-        "/ancestor::div[contains(@class, 'MuiFormControl-root')][1]",
+        By.CSS_SELECTOR,
+        '[data-source="label_id"]',
     )
 
     def verify_filters_visible(self):
@@ -45,23 +42,22 @@ class TasksPage(AdminListPage):
         return True
 
     def filter_by_status(self, status):
-        self.select_filter_option(1, status, "status_id")
+        self.select_filter_option(self.FILTER_STATUS, status, "status_id")
 
     def filter_by_assignee(self, assignee):
-        self.select_filter_option(0, assignee, "assignee_id")
+        self.select_filter_option(self.FILTER_ASSIGNEE, assignee, "assignee_id")
 
     def filter_by_label(self, label):
-        self.select_filter_option(2, label, "label_id")
+        self.select_filter_option(self.FILTER_LABEL, label, "label_id")
 
-    def select_filter_option(self, index, option_text, filter_key):
-        comboboxes = self.wait.until(
-            lambda driver: (
-                elements
-                if len(elements := driver.find_elements(*self.COMBOBOXES)) > index
-                else False
-            )
+    def select_filter_option(self, filter_locator, option_text, filter_key):
+        filter_field = self.visible(filter_locator)
+        combobox = filter_field.find_element(By.CSS_SELECTOR, '[role="combobox"]')
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});", combobox
         )
-        comboboxes[index].click()
+        combobox.click()
+        self.wait.until(lambda driver: combobox.get_attribute("aria-expanded") == "true")
         option = self.wait.until(
             EC.visibility_of_element_located(
                 (
